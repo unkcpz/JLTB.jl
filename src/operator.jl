@@ -1,8 +1,12 @@
+module Operator
+
+export SquareOperator, eigenspectrum
+
 using LinearAlgebra
 
-mutable struct DenseOperator{T<:Matrix{ComplexF64}}
+mutable struct SquareOperator{T<:Matrix{ComplexF64}}
     data::Matrix{ComplexF64}
-    function DenseOperator{T}(data::T) where {T<:Matrix{ComplexF64}}
+    function SquareOperator{T}(data::T) where {T<:Matrix{ComplexF64}}
         if !(size(data, 1) == size(data, 2))
             throw(DimensionMismatch())
         end
@@ -10,10 +14,10 @@ mutable struct DenseOperator{T<:Matrix{ComplexF64}}
     end
 end
 
-DenseOperator(data::T) where {T<:Matrix{ComplexF64}} = DenseOperator{T}(data)
-DenseOperator(data) = DenseOperator(convert(Matrix{ComplexF64}, data))
+SquareOperator(data::T) where {T<:Matrix{ComplexF64}} = SquareOperator{T}(data)
+SquareOperator(data) = SquareOperator(convert(Matrix{ComplexF64}, data))
 
-function eigenspectrum(op::DenseOperator)
+function eigenspectrum(op::SquareOperator)
     # 此处应确保Hermi，保证实数本征值
     # 此处还应该对spin=2的情况reshape矩阵
     # TODO：返回eigenvectors
@@ -21,5 +25,4 @@ function eigenspectrum(op::DenseOperator)
     return d
 end
 
-function Hamiltonian(onsites, hoppings, orbitals)
-end
+end # module
