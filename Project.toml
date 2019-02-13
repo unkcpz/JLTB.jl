@@ -1,2 +1,5 @@
 name = "JLTB"
 uuid = "6bcf73f0-4ae8-5594-9f38-c383d6bdea85"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"

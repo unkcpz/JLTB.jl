@@ -2,6 +2,8 @@ module Operator
 
 export SquareOperator, eigenspectrum
 
+import Base: ==
+
 using LinearAlgebra
 
 mutable struct SquareOperator{T<:Matrix{ComplexF64}}
@@ -14,8 +16,10 @@ mutable struct SquareOperator{T<:Matrix{ComplexF64}}
     end
 end
 
-SquareOperator(data::T) where {T<:Matrix{ComplexF64}} = SquareOperator{T}(data)
+SquareOperator(data::T) where T<:Matrix{ComplexF64} = SquareOperator{T}(data)
 SquareOperator(data) = SquareOperator(convert(Matrix{ComplexF64}, data))
+
+==(x::T, y::T) where T<:SquareOperator = (x.data == y.data)
 
 function eigenspectrum(op::SquareOperator)
     # 此处应确保Hermi，保证实数本征值
