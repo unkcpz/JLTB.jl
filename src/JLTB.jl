@@ -1,7 +1,7 @@
 module JLTB
 
-export SquareOperator, eigenspectrum
+export Hamiltonian, eigenspectrum
 
-include("operator.jl")
+include("hamiltonian.jl")
 
 end

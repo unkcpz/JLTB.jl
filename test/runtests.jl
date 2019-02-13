@@ -1,5 +1,5 @@
 names = [
-    "test_operator.jl",
+    "test_hamiltonian.jl",
 ]
 
 for name in names
