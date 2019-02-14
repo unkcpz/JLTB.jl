@@ -10,13 +10,40 @@ mutable struct Model
     end
 end
 
-function kpath(rlatt::Matrix{Float64}, path::Matrix{Float64}, nk::Int64=300)
-    nnodes = size(path, 1)
+function kpath(latt::Matrix{Float64}, path::Matrix{Float64}, nk::Int64=300)
     dim = size(path, 2)
+
+    # metric tensor of k space
+    metric = inv(latt⋅latt')
+
+    nnodes = size(path, 1)
+    knodes = zeros(nnodes)
+    for i = 1:nnodes-1
+        dk = path[i+1,:] - path[i,:]
+        dklen = √(dk⋅metric⋅dk)
+        knodes[i+1] = knodes[i] + dklen
+
+    nodeIdx = zeros(nnodes)
+    for i = 1:nnodes-1
+        idx = round(Int,nk*knodes[i]/knodes[end])
+        nodeIdx[i] = idx
+    nodeIdx[end] = nk
+
     kvectors = zeros(nk, dim)
     kdists = zeros(nk)
-    knodes = zeros(nnodes)
-    
+    for i = eachindex(knodes)
+        if i==1
+            continue
+        end
+        idxInit = nodeIdx[i-1]
+        idxFinal = nodeIdx[i]
+        knodeInit = knodes[i-1]
+        knodeFinal = knodes[i]
+        pathInit = path[i-1]
+        pathFinal = path[i]
+        for j = idxInit:idxFinal
+            kdists[j] = (j-idxInit)/(idxFinal-idxInit)    
+
     return kvectors, kdists, knodes
 end
 
