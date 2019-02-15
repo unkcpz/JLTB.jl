@@ -1,6 +1,6 @@
 module hamiltonian
 
-export Hamiltonian
+export Hamiltonian, eigens, Hopping
 
 import Base: ==
 
@@ -34,6 +34,15 @@ function Hamiltonian(k, onsites, hoppings, orbitals)
         data[j, i] += amp'
     end
     Hamiltonian(data)
+end
+
+function eigens(ham::Hamiltonian)
+    return eigvals(ham.data)
+end
+
+function eigens(k, onsites, hoppings, orbitals)
+    ham = Hamiltonian(k, onsites, hoppings, orbitals)
+    return eigens(ham)
 end
 
 mutable struct Hopping

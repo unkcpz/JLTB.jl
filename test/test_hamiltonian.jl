@@ -23,6 +23,8 @@ op2 = Hamiltonian([1//3, 1//3], onsites, hoppings, orbitals)
 @test 1e-12 > norm(op1.data - [1.0+0im 1.8+0im; 1.8+0im 1.0+0im])
 @test 1e-12 > norm(op2.data - [1.0+0im 0+0im; 0+0im 1.0+0im])
 
+@test 1e-12 > norm()
+
 # hopping creation
 hopping4 = Hopping(6.0, 1, 0, [1, 1])
 hopping5 = Hopping(6, 1, 0, [0, 0])
