@@ -36,35 +36,26 @@ function Hamiltonian(k, onsites, hoppings, orbitals)
     Hamiltonian(data)
 end
 
-function eigens(ham::Hamiltonian)
-    return eigvals(ham.data)
-end
+eigens(ham::Hamiltonian)= eigvals(ham.data)
 
 function eigens(k, onsites, hoppings, orbitals)
     ham = Hamiltonian(k, onsites, hoppings, orbitals)
     return eigens(ham)
 end
 
-mutable struct Hopping
+struct Hopping
     amp::Float64
     indI::Int64
     indJ::Int64
     shiftR::Vector{Int64}
     dim::Int64
-    function Hopping(amp::Float64, indI::Int64, indJ::Int64, shiftR::T) where T<:Vector{Int64}
+    function Hopping(amp::Real, indI::Integer, indJ::Integer, shiftR::T) where T<:Vector{Int64}
         dim = length(shiftR)
         new(amp, indI, indJ, shiftR, dim)
     end
 end
 
-function Hopping(amp::Real,
-                 indI::Integer,
-                 indJ::Integer,
-                 shiftR::Vector{T}) where T<:Integer
-    Hopping(convert(Float64, amp),
-            convert(Int64, indI),
-            convert(Int64, indJ),
-            convert(Vector{Int64}, shiftR))
-end
+Hopping(amp, indI, indJ, shiftR) = Hopping(amp, indI, indJ, convert(Vector{Int64}, shiftR))
+
 
 end # module
