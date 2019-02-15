@@ -20,13 +20,15 @@ Hamiltonian(data) = Hamiltonian(convert(Matrix{ComplexF64}, data))
 
 function Hamiltonian(k, onsites, hoppings, orbitals)
     data = diagm(0 => convert(Vector{ComplexF64}, onsites))
+    dim = size(orbitals, 1)
+    rv = zeros(Float64, dim)
     for h in hoppings
         i, j = h.indI, h.indJ
         R = h.shiftR
         amp = h.amp
 
         # vector from i to j+R
-        rv = orbitals[j,:] + R - orbitals[i,:]
+        rv .= orbitals[j,:] + R - orbitals[i,:]
         amp = amp*exp(2π*1im*(rv⋅k))
         data[i, j] += amp
         data[j, i] += amp'
