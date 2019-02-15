@@ -7,18 +7,17 @@ latt = [3.0 0.0; -1.5 1.5*√3]
 path = [0.0 0.0; 1/3 1/3; 1/2 0; 0 0]
 nk = 300
 
-kvectors, kdists, _= kpath(latt, path, nk)
+# test KPath creation
+@test_throws ErrorException KPath(latt, [0.0 0.5 0.5 0.5; 0.0 0.0 0.0 0.0])
+@test_throws ErrorException KPath(latt, [0.0 0.0 0.0 0.0])
 
-onsites = [1.0, 1.0]
-hopping1 = Hopping(0.6, 2, 1, [0, 0])
-hopping2 = Hopping(0.6, 2, 1, [1, 1])
-hopping3 = Hopping(0.6, 2, 1, [1, 0])
-hoppings = [hopping1, hopping2, hopping3]
-orbitals = [0.0 0.0; 2//3 1//3]
+kpath = KPath(latt, path)
+@test 1e-12 > norm(kpath.metric - inv(latt*latt'))
+@test kpath.nnodes == 4
+@test kpath.dim == 2
 
-bands, kdists = eigenspectrum(onsites, hoppings, orbitals, kvectors, kdists)
+kvectors, kdists, knodes = kinfo(kpath, nk)
+@test nk == size(kvectors, 1) == length(kdists)
+@test length(knodes) == 4
 
-using Plots
-plot(kdists, bands[1,:])
-plot!(kdists, bands[2,:])
 end # testset

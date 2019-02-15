@@ -1,12 +1,28 @@
 module kpath
 
 using LinearAlgebra
-using ..hamiltonian
 
-function kpath(latt::Matrix{Float64}, path::Matrix{Float64}, nk::Int64=300)
-    # metric tensor of k space
-    metric = inv(latt*latt')
+struct KPath{T<:Matrix{Float64}}
+    metric::T
+    path::T
+    nnodes::Int64
+    dim::Int64
+    function KPath{T}(metric::T, path::T) where T<:Matrix{Float64}
+        nnodes, dim = size(path)
+        if dim > 3
+            error("Dimension of path = $dim, expect to 1, 2 or 3.")
+        end
+        if nnodes < 2
+            error("path contain too less nodes")
+        end
+        new(metric, path, nnodes, dim)
+    end
+end
 
+KPath(latt::T, path::T) where T<:Matrix{Float64} = KPath{T}(inv(latt*latt'), path)
+KPath(latt, path) = KPath(convert(Matrix{Float64}, latt), convert(Matrix{Float64}, path))
+
+function kinfo(metric::T, path::T, nk::Int64=300) where T<:Matrix{Float64}
     nnodes = size(path, 1)
     knodes = zeros(nnodes)
     for i = 1:nnodes-1
@@ -36,21 +52,6 @@ function kpath(latt::Matrix{Float64}, path::Matrix{Float64}, nk::Int64=300)
     return kvectors, kdists, knodes
 end
 
-function eigenspectrum(onsites, hoppings, orbitals, kvectors, kdists, nk, dim)
-    no = size(orbitals, 1)
+kinfo(kpath::K, nk::Int64=300) where K<:KPath = kinfo(kpath.metric, kpath.path, nk)
 
-    k = zeros(Float64, dim)
-    eigenvals = zeros(Float64, nk, no)
-    for r in 1:size(kvectors, 1)
-        k .= kvectors[r, :]
-        eigenvals[r, :] .= eigens(k, onsites, hoppings, orbitals)
-    end
-    return eigenvals', kdists
-end
-
-function eigenspectrum(onsites, hoppings, orbitals, kvectors, kdists)
-    nk = length(kdists)
-    dim = size(kvectors, 2)
-
-    eigenspectrum(onsites, hoppings, orbitals, kvectors, kdists, nk, dim)
-end
+end # module
