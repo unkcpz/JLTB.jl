@@ -1,4 +1,6 @@
-module kpath
+module kpoint
+
+export KPath, kinfo
 
 using LinearAlgebra
 
