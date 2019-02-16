@@ -2,7 +2,7 @@ using Test
 using JLTB
 
 @testset "bands" begin
-onsites = [1.0, 1.0]
+onsites = [-1.0, 1.0]
 hopping1 = Hopping(0.6, 2, 1, [0, 0])
 hopping2 = Hopping(0.6, 2, 1, [1, 1])
 hopping3 = Hopping(0.6, 2, 1, [1, 0])
@@ -19,4 +19,7 @@ kdists, bands= eigenspectrum(onsites, hoppings, orbitals, kvectors, kdists)
 idx = findfirst(kdists .== knodes[2])
 @test bands[1, idx] ≈ bands[2, idx]
 
+using Plots
+plot(kdists, bands[1,:])
+plot!(kdists, bands[2,:])
 end # testset

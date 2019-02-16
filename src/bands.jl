@@ -1,6 +1,6 @@
 module bands
 
-using ..hamiltonian, ..kpath
+using ..hamiltonian, ..kpoint
 
 function eigenspectrum(onsites, hoppings, orbitals, kvectors, kdists, nk, dim)
     no = size(orbitals, 1)
